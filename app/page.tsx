@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import DecryptedText from './components/DecryptedText';
+import { Instagram, Youtube, Twitter } from 'lucide-react';
+import { SiTiktok } from 'react-icons/si';
 
 export default function Home() {
   const [showWhiteScreen, setShowWhiteScreen] = useState(false);
@@ -12,8 +14,11 @@ export default function Home() {
   const [blackBarsVisible, setBlackBarsVisible] = useState(false);
   const [blackBarsAnimateOut, setBlackBarsAnimateOut] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [showSecondImage, setShowSecondImage] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const secondAudioRef = useRef<HTMLAudioElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const audioInitializedRef = useRef(false);
 
   const slides = [
     "I was a dreamer once. I dreamt of love, of peace, of happiness.",
@@ -104,17 +109,38 @@ export default function Home() {
 
   const handleBeginClick = async () => {
     console.log('BEGIN button clicked!');
+    
+    // Prevent double initialization
+    if (audioInitializedRef.current) {
+      console.log('Audio already initialized, skipping');
+      return;
+    }
+    
     try {
+      // Initialize first audio
       if (!audioRef.current) {
         audioRef.current = new Audio('/assets/opening.wav');
         audioRef.current.loop = false;
         audioRef.current.preload = 'auto';
+        
+        // Set up event listener for when first audio ends
+        audioRef.current.addEventListener('ended', handleFirstAudioEnd);
       }
+
+      // Initialize second audio (preload only)
+      if (!secondAudioRef.current) {
+        secondAudioRef.current = new Audio('/assets/warm memories.wav');
+        secondAudioRef.current.loop = true;
+        secondAudioRef.current.preload = 'auto';
+        secondAudioRef.current.volume = 0;
+      }
+
+      // Mark as initialized
+      audioInitializedRef.current = true;
 
       // Prime audio: start muted
       audioRef.current.volume = 0.0;
       audioRef.current.currentTime = 0;
-      audioRef.current.loop = false;
 
       await audioRef.current.play();
       console.log('Music primed (muted).');
@@ -127,15 +153,46 @@ export default function Home() {
     }
   };
 
-  const toggleMute = () => {
-    if (audioRef.current) {
-      if (isMuted) {
-        audioRef.current.volume = 0.7;
-        setIsMuted(false);
-      } else {
-        audioRef.current.volume = 0;
-        setIsMuted(true);
+  const handleFirstAudioEnd = async () => {
+    console.log('First audio ended, starting second audio with fade');
+    
+    // Start fading to image7.jpg
+    setShowSecondImage(true);
+    
+    // Start second audio and fade in
+    if (secondAudioRef.current) {
+      try {
+        await secondAudioRef.current.play();
+        
+        // Fade in second audio over 3 seconds
+        const fadeSteps = 30;
+        const fadeInterval = 3000 / fadeSteps;
+        const targetVolume = isMuted ? 0 : 0.7;
+        
+        for (let i = 0; i <= fadeSteps; i++) {
+          setTimeout(() => {
+            if (secondAudioRef.current && !isMuted) {
+              secondAudioRef.current.volume = (targetVolume * i) / fadeSteps;
+            }
+          }, fadeInterval * i);
+        }
+      } catch (error) {
+        console.error('Error playing second audio:', error);
       }
+    }
+  };
+
+  const toggleMute = () => {
+    if (isMuted) {
+      // Unmute
+      if (audioRef.current) audioRef.current.volume = 0.7;
+      if (secondAudioRef.current) secondAudioRef.current.volume = 0.7;
+      setIsMuted(false);
+    } else {
+      // Mute
+      if (audioRef.current) audioRef.current.volume = 0;
+      if (secondAudioRef.current) secondAudioRef.current.volume = 0;
+      setIsMuted(true);
     }
   };
 
@@ -175,7 +232,10 @@ export default function Home() {
           </>
         )}
         
-        {showTitleBg && <div className={`title-card-bg ${showTitleBg ? 'visible' : ''}`}></div>}
+        {showTitleBg && <div className={`title-card-bg ${showTitleBg ? 'visible' : ''} ${showSecondImage ? 'fade-to-second' : ''}`}></div>}
+        
+        {/* Second background image */}
+        {showSecondImage && <div className={`second-bg ${showSecondImage ? 'visible' : ''}`}></div>}
         
         {/* Text positioned on bottom letterbox bar */}
         <div className={`white-screen-text ${currentSlide >= 0 ? 'visible' : ''}`} id="white-screen-text">
@@ -192,10 +252,52 @@ export default function Home() {
         </div>
         
         {showTitle && (
-          <div className={`title-card ${showTitle ? 'slide-in' : ''}`}>
-            <span className="title-skyline">SKYLINE</span>{' '}
-            <span className="title-fallacy">FALLACY</span>
-          </div>
+          <>
+            <div className={`title-card ${showTitle ? 'slide-in' : ''}`}>
+              <span className="title-skyline">SKYLINE</span>{' '}
+              <span className="title-fallacy">FALLACY</span>
+            </div>
+            
+            {/* Social Media Icons */}
+            <div className="social-icons">
+              <a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="social-icon"
+                aria-label="Instagram"
+              >
+                <Instagram size={28} />
+              </a>
+              <a 
+                href="https://tiktok.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="social-icon"
+                aria-label="TikTok"
+              >
+                <SiTiktok size={28} />
+              </a>
+              <a 
+                href="https://youtube.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="social-icon"
+                aria-label="YouTube"
+              >
+                <Youtube size={28} />
+              </a>
+              <a 
+                href="https://twitter.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="social-icon"
+                aria-label="X (Twitter)"
+              >
+                <Twitter size={28} />
+              </a>
+            </div>
+          </>
         )}
         
         {/* Control buttons */}
