@@ -314,6 +314,47 @@ body {
     z-index: 10;
 }
 
+/* Homepage Buttons - All buttons share the same styling */
+.homepage-button {
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    font-size: 12px;
+    padding: 12px 20px;
+    backdrop-filter: blur(5px);
+    font-family: 'Press Start 2P', monospace;
+    letter-spacing: 0;
+    text-transform: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.homepage-button:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.homepage-button:active {
+    transform: scale(0.95);
+}
+
+/* About Us Button - Smaller version of homepage button */
+.about-us-button {
+    font-size: 10px !important;
+    padding: 8px 14px !important;
+}
+
+.about-us-button:hover {
+    transform: translateX(-50%) scale(1.05) !important;
+}
+
+.about-us-button:active {
+    transform: translateX(-50%) scale(0.95) !important;
+}
+
 /* White Button with Less Pixelation */
 .neon-button {
     position: relative;
@@ -440,20 +481,30 @@ body {
     position: absolute;
     top: 18vh;
     left: 50%;
-    transform: translateX(-50%) translateY(100vh);
+    transform: translateX(-50%) translateY(0);
     font-family: 'Press Start 2P', monospace;
     font-size: 42px;
     letter-spacing: 4px;
     text-align: center;
-    opacity: 0;
+    opacity: 0; /* Hidden by default */
     z-index: 7; /* Above everything including text and letterbox bars */
-    transition: opacity 2s ease-in-out, transform 2s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: opacity 4s ease-in-out; /* Only for fade-out */
   }
   
   .title-card.slide-in {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
     animation: cloudyHover 4s ease-in-out infinite;
+    transition: opacity 0s ease-in-out; /* Instant appearance, no fade-in */
+  }
+  
+  .title-card:not(.slide-in) {
+    opacity: 0;
+    transition: opacity 4s ease-in-out;
+  }
+  
+  .title-card.fade-out {
+    opacity: 0;
+    transition: opacity 4s ease-in-out;
   }
 
   /* Cloudy hovery effect */
@@ -491,11 +542,17 @@ body {
 
   .title-card-bg.visible {
     opacity: 1;
+    transition: opacity 2s ease-in-out;
   }
 
   .title-card-bg.fade-to-second {
-    filter: brightness(0.7);
-    opacity: 0.5;
+    opacity: 0;
+    transition: opacity 3s ease-in-out;
+  }
+  
+  .title-card-bg:not(.visible) {
+    opacity: 0;
+    transition: opacity 3s ease-in-out;
   }
 
   /* Mobile: Full screen background for title */
@@ -505,25 +562,6 @@ body {
       background-size: cover;
       background-attachment: fixed;
     }
-  }
-
-  /* Second background image (image7.jpg) */
-  .second-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('/assets/image7.jpg');
-    background-size: cover;
-    background-position: center;
-    opacity: 0;
-    z-index: 3;
-    transition: opacity 4s ease-in-out;
-  }
-
-  .second-bg.visible {
-    opacity: 1;
   }
 
   /* Mobile: Full screen for second background */
@@ -577,14 +615,275 @@ body {
   transition: opacity 200ms ease-in-out;
 }
 
+/* Soundtrack Container */
+.soundtrack-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.soundtrack-toggle {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.soundtrack-toggle:hover {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.05);
+}
+
+.soundtrack-list {
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+  backdrop-filter: blur(10px);
+}
+
+.soundtrack-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.soundtrack-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateX(5px);
+}
+
+.soundtrack-item.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.6);
+  font-weight: bold;
+}
+
+.soundtrack-nav {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 10px 15px;
+  backdrop-filter: blur(10px);
+}
+
+.soundtrack-nav-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 40px;
+}
+
+.soundtrack-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+.soundtrack-nav-btn:active {
+  transform: scale(0.95);
+}
+
+.soundtrack-play-pause-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 50px;
+}
+
+.soundtrack-play-pause-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.soundtrack-play-pause-btn:active {
+  transform: scale(0.95);
+}
+
+.soundtrack-nav-info {
+  color: #ffffff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.soundtrack-controls {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 15px;
+  backdrop-filter: blur(10px);
+  min-width: 250px;
+}
+
+.soundtrack-progress-container {
+  width: 100%;
+}
+
+.soundtrack-progress-bar {
+  width: 100%;
+  height: 8px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.soundtrack-progress-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: -4px; /* Center the thumb vertically */
+}
+
+.soundtrack-progress-bar::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.soundtrack-progress-bar::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.soundtrack-progress-bar::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.soundtrack-progress-bar::-webkit-slider-runnable-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.soundtrack-progress-bar::-moz-range-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.soundtrack-time-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #ffffff;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+}
+
+.soundtrack-time-display span {
+  opacity: 0.8;
+}
+
+/* Story Screen */
+.story-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.story-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 24px;
+  color: #000000;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.return-home-button {
+  background: #000000;
+  border: 4px solid #ffffff;
+  color: #ffffff;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-family: 'Press Start 2P', monospace;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.return-home-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.05);
+}
+
+.return-home-button:active {
+  transform: scale(0.95);
+}
+
 /* Control buttons */
 .control-btn {
   position: absolute;
   background: rgba(0, 0, 0, 0.6);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #ffffff;
-  font-size: 20px;
-  padding: 12px 16px;
+  font-size: 10px;
+  padding: 6px 8px;
   cursor: pointer;
   opacity: 0.3;
   transition: all 0.3s ease;
@@ -608,14 +907,14 @@ body {
 .mute-btn {
   top: 20px;
   right: 20px;
-  min-width: 50px;
+  min-width: 25px;
 }
 
 /* Responsive control buttons */
 @media (max-width: 768px) {
   .control-btn {
-    font-size: 16px;
-    padding: 10px 12px;
+    font-size: 8px;
+    padding: 5px 6px;
   }
   
   .mute-btn {
@@ -626,8 +925,8 @@ body {
 
 @media (max-width: 480px) {
   .control-btn {
-    font-size: 14px;
-    padding: 8px 10px;
+    font-size: 7px;
+    padding: 4px 5px;
   }
   
   .mute-btn {
@@ -645,8 +944,21 @@ body {
   display: flex;
   gap: 32px;
   z-index: 8;
-  opacity: 0;
-  animation: fadeInIcons 1.5s ease-in-out 1s forwards;
+  opacity: 1;
+}
+
+/* Black bar underneath social icons */
+.social-icons::before {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% + 80px);
+  height: 60px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 @keyframes fadeInIcons {
@@ -702,6 +1014,108 @@ body {
   .social-icon svg {
     width: 22px;
     height: 22px;
+  }
+}
+
+/* Mobile responsive buttons - stack vertically */
+@media (max-width: 768px) {
+  .homepage-buttons-container .soundtrack-container,
+  .homepage-buttons-container .begin-button,
+  .homepage-buttons-container > div[style*="83.33%"],
+  .restart-buttons-container .soundtrack-container,
+  .restart-buttons-container .begin-button,
+  .restart-buttons-container > div[style*="83.33%"] {
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+  
+  .homepage-buttons-container .soundtrack-container,
+  .restart-buttons-container .soundtrack-container {
+    top: 30% !important;
+  }
+  
+  .homepage-buttons-container .begin-button,
+  .restart-buttons-container .begin-button {
+    top: 50% !important;
+  }
+  
+  .homepage-buttons-container > div[style*="83.33%"],
+  .restart-buttons-container > div[style*="83.33%"] {
+    top: 70% !important;
+  }
+  
+  .homepage-button {
+    font-size: 10px;
+    padding: 10px 16px;
+  }
+  
+  .about-us-button {
+    font-size: 8px !important;
+    padding: 6px 12px !important;
+    bottom: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .homepage-buttons-container .soundtrack-container,
+  .restart-buttons-container .soundtrack-container {
+    top: 25% !important;
+  }
+  
+  .homepage-buttons-container .begin-button,
+  .restart-buttons-container .begin-button {
+    top: 50% !important;
+  }
+  
+  .homepage-buttons-container > div[style*="83.33%"],
+  .restart-buttons-container > div[style*="83.33%"] {
+    top: 75% !important;
+  }
+  
+  .homepage-button {
+    font-size: 9px;
+    padding: 8px 14px;
+  }
+  
+  .about-us-button {
+    font-size: 7px !important;
+    padding: 5px 10px !important;
+    bottom: 8px !important;
+  }
+  
+  .about-page {
+    padding: 20px !important;
+  }
+  
+  .about-page > div {
+    padding: 20px !important;
+  }
+  
+  .about-page h1 {
+    font-size: 16px !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .about-page h2 {
+    font-size: 12px !important;
+  }
+  
+  .about-page p {
+    font-size: 9px !important;
+  }
+}
+
+/* Fade-in animation for restart buttons */
+.restart-buttons-container {
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
