@@ -901,7 +901,7 @@ export default function Home() {
           position: 'fixed',
           top: '50%',
           left: '83.33%',
-          transform: 'translate(-50%, -50%)',
+          transform: 'translateY(-50%)',
           zIndex: 10
         }}>
           <button 
